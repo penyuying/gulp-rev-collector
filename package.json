@@ -35,12 +35,12 @@
     "collector"
   ],
   "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "*",
     "gulp-util": "^3.0.0",
     "through2": ">=0.5.1",
     "underscore": "^1.6.0"
-  },
-  "devDependencies": {
-    "mocha": "*"
   },
   "bugs": {
     "url": "https://github.com/shonny-ua/gulp-rev-collector/issues"
