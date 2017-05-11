@@ -151,11 +151,14 @@ function revCollector(opts) {
                 changes.forEach(function (r) {
                     src = src.replace(r.regexp, function($1){
                         var res=r.replacement;
-                        if(opts.type=="part" && $1 && $1.substr(-1)=="?"){
-                            res=res+"&";
-                        }else{
-                            res=res+"?";
+                        if($1 && $1.substr(-1)=="?"){
+                            if(opts.type=="part"){
+                                res=res+"&";
+                            }else{
+                                res=res+"?";
+                            }
                         }
+                        
                         return res;
                     });
                 });
