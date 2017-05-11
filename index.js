@@ -64,13 +64,28 @@ function closeDirBySep(dirname) {
     return dirname + (!dirname || new RegExp( escPathPattern('/') + '$' ).test(dirname) ? '' : '/');
 }
 
+//相对路径转成绝对路径
+function absPath(dir) {
+    var res = dir;
+
+    if (!dir) {
+        return res;
+    }
+    if (!path.isAbsolute(dir)) {//相对路径转绝对路径
+        res = path.normalize(path.join(process.cwd(), dir)).replace(/\\/g, "/");
+    } else {
+        res = path.normalize(dir).replace(/\\/g, "/");
+    }
+    return res;
+}
+    
 function revCollector(opts) {
     opts = _.defaults((opts || {}), defaults);
-    
     var manifest  = {};
     var mutables = [];
-    opts.file=opts.file||"";
+    opts.file=absPath(opts.file)||"";
     opts.type=opts.type||"name";
+
     return through.obj(function (file, enc, cb) {
         if (!file.isNull()) {
             var mData = _getManifestData.call(this, file, opts);
