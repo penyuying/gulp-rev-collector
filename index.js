@@ -69,7 +69,8 @@ function revCollector(opts) {
     
     var manifest  = {};
     var mutables = [];
-    opts.file=opts.file||{};
+    opts.file=opts.file||"";
+    opts.type=opts.type||"name";
     return through.obj(function (file, enc, cb) {
         if (!file.isNull()) {
             var mData = _getManifestData.call(this, file, opts);
@@ -125,6 +126,9 @@ function revCollector(opts) {
                 });
             } else {
                 patterns.forEach(function (pattern) {
+                    if(opts.type=="part"){
+                        pattern=pattern+"+[\?]*";//如果是参数后缀形式
+                    }
                     changes.push({
                         regexp: new RegExp( pattern, 'g' ),
                         patternLength: pattern.length,
@@ -145,7 +149,15 @@ function revCollector(opts) {
             if (!file.isNull()) {
                 var src = file.contents.toString('utf8');
                 changes.forEach(function (r) {
-                    src = src.replace(r.regexp, r.replacement);
+                    src = src.replace(r.regexp, function($1){
+                        var res=r.replacement;
+                        if(opts.type=="part" && $1 && $1.substr(-1)=="?"){
+                            res=res+"&";
+                        }else{
+                            res=res+"?";
+                        }
+                        return res;
+                    });
                 });
                 file.contents = new Buffer(src);
             }
